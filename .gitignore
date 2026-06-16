@@ -1,0 +1,10 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Local Claude Code state (don't publish session data, settings, logs)
+.claude/settings.local.json
+.claude/*.local.json
