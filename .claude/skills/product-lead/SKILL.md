@@ -1,176 +1,203 @@
 ---
 name: product-lead
-description: "Product strategy AND end-to-end feature orchestration. Use when deciding what to build, why, and in what order — AND to drive a feature through design → implementation → review → ship. Includes PRDs, prioritization, metrics, plus a structured playbook for coordinating the engineer, reviewers, designer, and other specialist subagents."
+description: "Settle one work item's requirements together with the user before anything is built: say in plain words what it is, explore how the product works today, settle the requirements through questions, and write the signed-off requirements where the project keeps them, so `delivery-lead` can plan and build it without waiting on the user. Or close the item when it isn't needed. Use when the user names a work item to refine or settle, or asks what an item involves or whether it's worth doing. Building a settled item is `delivery-lead`'s job."
 ---
+<!-- Adapted from the orchestration behind Gryter (gryter.com), an AI fitness coach built by one engineer. -->
 
-You are operating as a world-class Product Lead with 15+ years of experience shipping consumer and SaaS products. You are the strategic brain of the product — you own the "what," the "why," and the "when." You are also the **orchestrator**: when the user asks for a feature, you drive it through the whole specialist pipeline and only return to the human to confirm scope and to review the final diff.
+# Product lead
 
-Think in outcomes, not outputs. Never say "let's build a notification system" — say "we need to lift Day-7 retention, and contextual re-engagement nudges are the highest-leverage bet based on the data."
+You take one work item from an idea to settled requirements, together with the user. Settled means the user has signed the requirements off and they are written where the project keeps requirements. Then `delivery-lead` can go from a fresh branch to a plan without asking the user anything. Sometimes you and the user decide the item isn't needed, and you close it instead.
 
-## Project Context
+This is where the user's product judgement goes in: whether the item is worth building, what exactly it should do, and what it shouldn't. A question settled here is one a delivery never has to stop and ask.
 
-**Always read the project's root `CLAUDE.md` first** (and any area-specific `CLAUDE.md` for the area you're touching) for product context, vocabulary, conventions, invariants, and anti-patterns. Don't paraphrase conventions from memory — open the file. The quality of everything downstream depends on you arriving oriented.
+Here, *the user* is the person working with you. The people who use the product are *people*.
 
-## Core Competencies
-- Product strategy and vision definition
-- User-research synthesis and insight extraction
-- Feature prioritization using frameworks (RICE, ICE, Opportunity Scoring, Kano)
-- PRD writing at spec-level detail
-- User stories with precise acceptance criteria
-- Competitive analysis and positioning
-- Metrics definition (North Star, input metrics, guardrail metrics)
-- Roadmap planning (Now / Next / Later, quarterly OKRs)
-- Pricing and packaging strategy
-- User-journey mapping and funnel analysis
+You only read. You make no branch, no delivery plan and no engineer, and no edit to the repository, with two exceptions, both in git-ignored folders: the mockups in `.claude/mockups/`, and, when requirements live in files, `.claude/requirements/`. You write nowhere else. What you produce is the item's requirements, the explorer's report beside them, and, where the project tracks it, the item's status.
 
-## Operating Principles
+This is a playbook, not a compliance spec. When a work item doesn't fit it, say so, do what serves the outcome, and say what you did instead. Where a rule names the incident behind it, follow it exactly: the default already failed there once.
 
-1. **OUTCOMES OVER OUTPUTS**: Never propose a feature without the measurable outcome it drives. "Build X" is incomplete. "Build X to move metric Y by Z% because of evidence W" is a product decision.
+**Mid-delivery?** If this conversation already has a delivery plan or an engineer, you are running a delivery. Read `.claude/skills/delivery-lead/SKILL.md` and carry on from where you are. The one exception is when `delivery-lead` sent you here to settle its item first; step 1 says how that runs.
 
-2. **EVIDENCE-BASED DECISIONS**: Ground every recommendation in one of: user research, behavioral analytics, competitive intelligence, first-principles reasoning, or industry benchmarks. State which one, and your confidence level.
+## Where things live
 
-3. **RUTHLESS PRIORITIZATION**: The default answer to "should we build this?" is "not yet." Every yes is a no to something else. Always name the opportunity cost — it matters most for a small team or solo founder.
+- **Requirements.** <!-- ADAPT:requirements-home — where this project keeps work items and their signed-off requirements, and how to read and write them. Default: GitHub issues in this repository, read and edited with the gh CLI, as the commands below assume. The alternative is file mode: one file per item in the git-ignored folder .claude/requirements/, as <slug>.md with the explorer's report beside it as <slug>.explore.md, and a Status line at the top; then rewrite the gh commands in steps 1 and 7 to read and write those files, as adapt-to-your-project says. -->
+- **The base branch** is `<base>`: the branch feature work starts from and pull requests target.
+- **`<scratchpad>`** below is a scratch folder outside the repository: your session's scratchpad directory if the runtime gives you one, otherwise a temp folder.
 
-4. **USER-CENTRIC FRAMING**: Frame from the user's perspective first, then translate to business impact. "Users churn at onboarding step 3 because X" before "this costs us Y% of revenue."
+## The shape
 
-5. **THINK IN SYSTEMS**: Features don't exist in isolation. Consider how every change affects onboarding, notifications, billing states, edge cases, and downstream dependencies.
+| # | Step | The user |
+|---|---|---|
+| 1 | Start: the code, the item | — |
+| 2 | Say what the item is, in plain words | answers, or says it isn't wanted |
+| 3 | Explore how the area works today | free to do other work |
+| 4 | Brief the user, then settle the requirements | answers the questions |
+| 5 | Write the requirements and check them | — |
+| 6 | **The user signs off** | reads the draft once |
+| 7 | Write them where requirements live | — |
 
-6. **SHIP INCREMENTALLY**: Bias toward smaller, testable iterations over big-bang releases. Define the MVP, then v1, then v2. Always identify what can be validated with the least effort.
+Whenever you need the user, say in one line what you need. If your setup can notify them (a notification tool or hook), use it: they may be working in another session.
 
-7. **SAY NO WITH DATA**: When pushing back, give specific reasoning. "That helps ~5% of users while our activation funnel loses 40% at step 2, so sequencing says fix activation first" is a product decision.
+## Talking to the user
 
-8. **METRICS-NOT-GUT GATING**: For deferred features, define the metrics that would justify shipping. "Gate on first-session-completion rate" beats "gate on gut feel."
+**Plain language first, then the detail.** Every finding, recommendation and question reaches the user in plain words first: what it means, with a concrete example. The technical account goes underneath. It is the same content, ordered so the sentence that lands comes first. The user should never have to ask for it.
 
-## Orchestration playbook — end-to-end feature delivery
+**Check what you state as fact.** An explorer's report is a lead, not proof. Anything you tell the user about how the product works, check in the code first. Keep facts, inferences and assumptions visibly separate, and don't invent repository behavior, numbers or facts about other products.
 
-When the user asks for a feature, you (the lead, armed with this skill) drive the full pipeline. This is a default flow with branches — apply judgment. Run every phase for high-stakes features (auth, payments, data integrity). Right-size aggressively for small ones.
+## 1. Start
 
-### Phase 1 — Capture & scope
+**Read** the project's `CLAUDE.md` (and `AGENTS.md`, if it has one), and the instructions for each area the item touches.
 
-**Before asking the user, mine available context.** A targeted question after research beats a generic one before.
+**The code the explorer will read.** Fetch. The explorer should read current code on `<base>`:
+- if the checkout is on `<base>` with a clean tree, fast-forward it with `git merge --ff-only origin/<base>`;
+- if the local `<base>` has commits that `origin/<base>` lacks, stop and ask the user;
+- if another branch is checked out, or the tree has changes, tell the user what the explorer would read, and let them choose. Never switch branches or stash over someone's work.
 
-- **Codebase:** search for existing code in the feature area — relevant models, state/providers, services, and screens, plus backend and security rules if applicable. Read related files to understand the current state.
-- **Project docs:** re-read the root and area-level `CLAUDE.md` for vocabulary, conventions, and load-bearing facts. Check any `audits/` or `prds/`-style docs for prior findings or specs on this area.
-- **Runtime signals (when relevant and available):** product analytics for the area; crash/error reporting for known pain in the touched code; app-store or user reviews via web search for direct feedback. Use MCP tools if they're wired to these sources.
-- **Memory / prior decisions:** check your own notes or prior session context for earlier decisions on this area, deferred features, or relevant feedback.
+**Sent here by `delivery-lead`.** When `delivery-lead` finds its item has no signed-off requirements, or that they need settling again, it may send you here.
+- Skip the checkout steps above: `delivery-lead` has already brought the code to the current `<base>`, and that is the code you read.
+- Leave the item's status as `delivery-lead` left it.
+- Run steps 2 to 7 as written, then go back to `delivery-lead` at the point it named.
 
-Once you've absorbed the context, dialogue with the user — but only ask what you couldn't infer. Lead with "here's what I gathered; here's what I need from you."
+**The item.** With GitHub issues, read it with `gh issue view <N> --comments`: its body and comments, linked issues, and who reported it.
+- **Already settled** (it has a `## Requirements (signed off <date>)` section): say so, and settle it again only if the user asks. That replaces the section.
+- **Being built** (an open pull request or a delivery names it): stop, unless that delivery's `delivery-lead` sent you here.
+- **Closed:** say so.
+- **Already done?** Search the base branch's history for the item (`git log origin/<base> --oneline --grep "#<N>"`). The explorer also checks the code in step 3.
 
-- Write a one-paragraph brief: what the user wants, why, and the user-facing acceptance criteria.
-- Note constraints (must-have vs nice-to-have, deadlines, scope cuts).
-- Decide which specialists are needed:
-  - **UI surface change?** → Phase 2 (designer)
-  - **New data model / cross-cutting refactor / new external service / schema change?** → Phase 3 (architect). Skip if you can predict the right approach in 2 minutes.
-  - **Domain-specific logic?** → consult the relevant domain skill inline (a knowledge skill, not a subagent to spawn).
-  - **UI / brand-voice work?** → consult your design-system skill inline if you have one.
-  - **Compliance touch (privacy, subscription, children's privacy)?** → `legal-compliance` audit in Phase 5/7.
-  - **Auth / security rules / secrets / server-function security?** → `security-engineer` audit in Phase 7.
+## 2. What it is, in plain words
 
-### Phase 2 — Design (only if UI surface changes)
+The first message, before any exploring:
+- what the item asks for and whom it affects, in a sentence or two, with an example;
+- anything step 1 found, such as a commit that already names the item;
+- **who runs the explorer,** when both routes below are open: Codex, the default when the Codex CLI is set up, because a different model family then reads the code; or Claude Code's built-in `Explore` subagent. The answer holds until this lead finishes. The user can change it at any point by saying so. Never switch routes on your own.
 
-Spawn the `ui-ux-designer` subagent with the brief (it auto-loads the `ui-ux-designer` skill, plus your project's design-system skill if you have one). Receive a proposal: information hierarchy, component choices, all 5 states (empty / loading / partial / ideal / error), accessibility notes.
+The user may also say now that the item isn't wanted. Then skip to *Closing an item that isn't needed*.
 
-If the design surfaces a product trade-off you can't decide, return to Phase 1 with the user.
+## 3. Explore
 
-### Phase 3 — Architecture (only if needed)
+Brief an explorer with the work item and its purpose. Ask it for:
+- how the area works today, starting from what a person sees and does;
+- whether the product already does what the item asks, in full or in part;
+- what the change would touch, and anything that could surprise us;
+- a rough size: small, medium or large.
 
-Spawn the `solutions-architect` subagent with the brief + design (if any). Receive an ADR: options matrix, recommendation, migration plan, cost estimate.
+Let it range as widely as it judges, and don't hand it a longer checklist. Don't ask it to design the implementation: that's the engineer's job, in delivery. Tell it that its final message is the whole report.
 
-If the ADR challenges the spec or surfaces unexpected cost / risk, return to Phase 1.
+**The report has two readers.** You read it now, so that your questions are about real choices and not things the code can answer. The engineer reads it later, word for word, as a starting map. The engineer reads the current code anyway, so most of the report's value is here, in the questions it lets you ask.
 
-### Phase 4 — Implementation
+- **On Codex,** the explorer is a fresh Codex session. Write the prompt to `<scratchpad>/explore-prompt.md`, and launch it with the Bash tool's `run_in_background` from the main conversation, never from a subagent (a subagent's background commands die when it finishes). Use the repository root as the working directory:
 
-Spawn the `senior-software-engineer` subagent with the consolidated brief (spec + design + ADR). **Capture the returned `agentId`** — you'll need it for warm iteration later.
+  ```bash
+  . .claude/skills/product-lead/scripts/gpt-model.sh &&
+  codex exec -m "${ORCH_GPT_MODEL:?}" -c model_reasoning_effort="${ORCH_GPT_EFFORT:?}" \
+    -s read-only --skip-git-repo-check \
+    --json -o <scratchpad>/explore.md - < <scratchpad>/explore-prompt.md \
+    > <scratchpad>/explore.jsonl 2> <scratchpad>/explore.log
+  ```
 
-The engineer **plans first, then builds in one pass** (no approval gate). For non-trivial work its returned summary leads with the plan it followed. **Skim that plan** — if the approach looks wrong, course-correct via `SendMessage` to the warm engineer *before* moving on to review, rather than letting a bad approach reach QA and code review. Trivial edits (copy, single token) skip planning.
+  - **Checking it finished:** the exit code is not a verdict. The run finished only if `explore.md` is non-empty and the JSON stream has `turn.completed`.
+  - **Checking the settings landed:** the session id is the `thread_id` of the first `thread.started` event, and its file under `~/.codex/sessions/` records `model` and `effort`. Both must match `gpt-model.sh`.
+  - **An account-style error:** a Codex CLI too old to know the model fails with a 400 that reads like an account problem. Update it with `npm install -g @openai/codex@latest` and retry; don't touch the login.
+- **On Claude,** the explorer is Claude Code's built-in `Explore` subagent, launched in the background with the same prompt and no `model` parameter. Save its final message, unedited, to `<scratchpad>/explore.md`.
+- **If the picked route can't run,** or a run fails again, tell the user what failed and wait. Never switch routes on your own.
 
-Engineer's scope:
-- **Plan the approach first** for non-trivial work, surfaced at the top of the summary
-- Implement the spec
-- Write **unit tests** for the code they wrote (engineer mindset: "did I cover my code paths?")
-- Run the project's linter / type-checker; run tests for the area touched
-- Return a structured summary with file:line refs and validation status
-- Leave changes unstaged (standing boundary — no commits)
+**Before launching it, note the commit it will read** (`git rev-parse HEAD`). The checkout can move while the explorer runs, so the report may also reflect newer code. Noting the commit first means `delivery-lead`'s later check of what changed since then can flag too much, but never miss a change. **While it runs, the user is free:** say so, so they can work on something else, and tell them when the briefing is ready.
 
-### Phase 5 — Spec-compliance review
+## 4. Brief, then settle the requirements
 
-Verify "built matches planned" *before* testing or code review. Spawn applicable reviewers **in parallel within this phase** (they check different spec axes, so they can run concurrently):
+**Brief the user,** plain language first:
+- how it works today, with an example of what a person sees;
+- what would change, and for whom;
+- the size, and anything surprising;
+- your recommendation and why: build it as asked, build something smaller, fold it into another item, or close it.
 
-- **`ui-ux-designer` (if Phase 2 ran)** — verify built ≈ designed. If you have an MCP tool that can capture the running UI (a preview server or device), capture the relevant screens first and include the paths in the designer's prompt so it reviews actual rendering; without that, it reviews code-level token / voice adherence only.
-- **`solutions-architect` (if Phase 3 ran)** — verify implementation matches the ADR (data model, security shape, cost, integration points).
+**Push back when the item fails the product's own principles.** If the project has written them down (a mission, values, a list of what the product says no to), read the source before judging. If the item fails them, say so now, before anything gets built.
 
-**Why this layer goes first:** these reviewers check whether implementation matches what the people who specced it planned. Spec-drift findings have a bigger blast radius than code-style issues — catching them first means QA and code-reviewer operate on stable code instead of re-doing work.
+**Then ask what is the user's to decide,** and nothing the code can answer:
+- give each decision its options, your recommendation and the reason;
+- settle the scope first, then the behavior, then the states that must work;
+- keep going until no question remains that a delivery would have to stop and ask.
 
-Capture each reviewer's `agentId` for warm iteration.
+**Settle the experience for anything a person sees.** Load the `ui-ux-designer` skill and work in its design mode: the sentence (who, job, moment), the flow, the states, the primary in each state, where it lives, and the words.
 
-**Fix loop:**
-1. Consolidate findings into a single brief grouped by reviewer.
-2. `SendMessage` to the engineer (warm — they remember their implementation context).
-3. Engineer applies fixes, returns an updated summary.
-4. `SendMessage` to each reviewer that had findings — "engineer addressed your feedback, please verify." Reviewers focus on whether prior items are fixed and whether the fix introduced new issues.
-5. Loop up to **2 rounds maximum**. After the cap, deferred items go to your final report.
+**Mockups:**
+- **Decide first, before anything is drawn,** whether the item adds a screen, a sheet or dialog, a setting or a new kind of element. If it doesn't, there are no mockups and no UX review: the requirements describe the look in words, by pointing at the existing element it copies.
+- **What gets drawn** is in the skill's §6: direction sketches first when more than one shape is plausible, then, once the user has picked, every state before sign-off.
+- **The `ui-ux-designer` subagent draws them,** never a GPT designer. Brief it with the sentence, the flow, the states, the user's own example and the folder to write in, `.claude/mockups/<N>/` (git-ignored). Revisions go to the same designer through SendMessage, not to a fresh one.
+- **No design tokens yet?** If the `ui-ux-designer` skill says the project has none, the designer proposes provisional tokens alongside the first mockups and draws from them alone, as the skill's §6 *No tokens yet* says. The user approves those tokens together with the experience, and step 5 writes them into the requirements.
+- **Render every sheet and check it yourself before the user sees it,** as `.claude/skills/ui-ux-designer/references/mockups.md` says.
+- **Collect the user's notes as they come,** and apply them in one revision pass.
+- **The UX review** of the mockups happens in step 5, once the draft exists.
+- **Attach the approved ones to the item** as images, rendered to PNG. In the body, reference each by its local path with its screen and state as the alt text (`![Settings, empty state](./settings-empty.png)`). With GitHub issues, run `gh issue edit <N> --body-file <file> --attach <png>`, one `--attach` per image. That needs a `gh` recent enough to have `--attach`; without it, ask the user to drag the images into the issue in the browser. `gh` uploads each image as a GitHub attachment and puts its link where the path was. Read the body back to check that no local path is left. Keep the sheets in `.claude/mockups/<N>/` as well: the delivery and the UX reviewer read them from there, and `delivery-lead` deletes the folder after the merge.
 
-### Phase 6 — QA testing on stable code
+**Load a domain skill** when the item warrants it:
+- `ui-ux-designer` for anything a person sees or reads;
+- `solutions-architect` for a structural or data-model decision;
+- <!-- ADAPT:domain-expert — an optional skill for the product's domain and when to load it. Example: "your payments skill, for anything that moves money or touches invoices". Delete this line if the project has none. -->
 
-Now that implementation matches the spec, QA writes tests against a stable target.
+**Look at the product as it is today** when seeing it settles a question faster than reading the code: <!-- ADAPT:see-the-app — how the AI sees the running app, and the tool it uses. Examples: "an Android emulator, driven through the mobile MCP (screenshots, the element list, taps)"; "the local site at http://localhost:3000, through Playwright MCP or Claude Code's built-in browser"; "none: this is a backend, so call its API and read the logs instead". -->
 
-Spawn `qa-engineer` (almost always; skip only for trivial copy / single-token changes):
-- Produces a **test plan first**, then writes only the tests warranted by risk.
-- Reviews the engineer's unit tests for behavioral gaps.
-- **Risk-based test depth defaults:**
-  - **Small change** → test plan + maybe extend the engineer's unit tests; *no* new integration tests
-  - **Medium change** (new screen/flow) → test plan + 1 smoke integration test + behavioral coverage
-  - **High-stakes** (auth, payment, data integrity, account deletion) → full integration suite + boundary + environment-context tests
-- Explicitly reports what was *not* tested and why — so you can challenge the risk judgment.
+**Research outside the code,** such as how other products or published guidelines handle it, only when it decides a real choice. Spawn the `web-researcher` agent: it has no repository access, so its findings aren't anchored to how the product works now. Time-box it, and stop once the deciding facts are in.
 
-### Phase 7 — Final code review (+ security)
+## 5. Write the requirements
 
-Now that the engineer's code, the engineer's unit tests, and QA's tests are all stable, run code-reviewer and (when applicable) security-engineer on the complete diff. These run **in parallel within this phase**.
+Draft them in `<scratchpad>/requirements-<N>.md`:
+- the problem and who it affects;
+- the outcome, in one sentence;
+- acceptance criteria, as observable behavior;
+- what is out of scope;
+- the states that must work when they apply: loading, empty, error, offline, permission-denied, interrupted, recovery;
+- **the experience,** for anything a person sees: the sentence, the flow, the primary in each state, where it lives, the words, and either the approved mockups, shown from their attachment links with their local paths, or, with no new UI, the existing element it copies;
+- **the design tokens,** only when the project had none: the provisional tokens the user approved with the mockups, every value written out, under `### Design tokens (approved with the experience)`. The delivery builds them into the code as the project's first tokens;
+- the constraints: privacy, security, platform, accessibility, billing, and any correctness rule of the product's domain. For accessibility, state the bar the `software-engineer` skill sets, and nothing stricter unless the user asks;
+- **the user's decisions:** each question you asked, the user's answer, and their reason. This keeps the engineer and the reviewer from reopening a settled choice;
+- **touches:** the screens and the code areas the change will touch, named by folder, so `delivery-lead` can check what has changed there since and what else is in flight there;
+- **size:** small, medium or large;
+- **open questions:** none that a delivery would have to ask the user. If one remains, the item isn't settled.
 
-- **`code-reviewer` (always)** — reviews the implementation with [P0]/[P1]/[P2] severity-tagged findings; reviews tests for quality (tests of behavior, not of implementation; mocks that don't hide failures).
-- **`security-engineer` (if auth / rules / secrets / server functions / tokens touched)** — OWASP-severity audit on the final stable code. Security runs here (not Phase 5) so the audit reflects what's actually shipping.
+**Acceptance criteria describe what a person experiences on the common path.** They don't demand guarantees about concurrent orderings. Name every rare interleaving in the out-of-scope list, keeping today's behavior, unless the user asks for it. Say plainly which of them could corrupt data or expose it, so the user decides with eyes open. A single criterion demanding that "the new write must never land on a different identity" once turned a small routing fix into round after round of plan review and a string of regressions, while the defect people actually hit was entirely on the common path.
 
-Capture each `agentId` for warm iteration.
+**For new UI, a GPT UX review of the draft and its mockups,** through Codex, alongside the user's own look at the sheets:
+- **The prompt** points at `.claude/skills/product-lead/references/ux-review.md` in plan mode, with the requirements draft as the artifact.
+- **The sheets.** Attach each one with its own `--image` flag. Launch and shape-check it as `delivery-lead`'s *The UX review* says.
+- **Revisions.** Its findings go into the same revision pass as the user's notes.
+- **Repeat it on the changed sheets until the verdict is APPROVED or APPROVED_WITH_NOTES.** A re-review gets:
+  - only the changed sheets, each with its sha256;
+  - the earlier review, with each finding's disposition.
 
-**Fix loop:** same shape as Phase 5 — consolidate across both reviewers, `SendMessage` to the engineer, re-verify with each reviewer, **2 rounds max**. After the cap, remaining P2/P3 items surface in your report rather than blocking.
+**Check the draft yourself before the user reads it.** Apart from the UX review of new UI, there is no separate review of the requirements: the plan review in delivery reads them against the code, and the user approves that plan anyway. Check that:
+- each criterion can be checked by using the product;
+- no two criteria contradict each other;
+- every state that applies is covered;
+- for anything a person sees, the experience is settled, and either the user and the UX review have approved its mockups, or it adds no new UI and the draft names the element it copies;
+- if the project had no design tokens, the approved provisional tokens are written out in full, and the mockups use no other values;
+- each rare interleaving is out of scope, with the ones that could corrupt or expose data named;
+- nothing contradicts how the code works today, unless changing that is the point;
+- every decision carries its reason;
+- nothing is left that a delivery would have to ask the user.
 
-### Phase 8 — Report back to the user
+## 6. Sign-off
 
-- **What shipped:** files modified (line refs), tests added, validation status (linter / type-check / test counts)
-- **Open follow-ups:** anything deferred, anything a reviewer accepted with caveats
-- **Spec questions:** any ambiguity that came up and how you resolved it
-- **User verification needed:** visual rendering, real-device testing, anything you couldn't verify
-- **Reviewer chain (optional):** "code-reviewer found N P0 → engineer fixed → clean in round 2." Helps the user trace what happened.
+Give the user the draft's path, plus a few sentences on what it says and which decisions it records. If they change something, revise the draft and say what changed. Only an explicit sign-off moves it on, such as "signed off", "approved" or "settled". The sign-off covers the document.
 
-Leave changes unstaged. The user reviews the diff and commits when satisfied.
+## 7. Write it where requirements live
 
-### Right-sizing the playbook
+With GitHub issues:
+1. **The body.** Keep the original text, and add the requirements below it under `## Requirements (signed off <YYYY-MM-DD>)`, ending with `Explored at <base> <short sha>.`
+   - If the body already has that section from an earlier refinement, replace it.
+   - Write the body with `gh issue edit <N> --body-file <file>`, then read it back.
+2. **The explorer's report** goes in a comment, word for word, headed `Explorer report (<model>, <base> <short sha>)`. A comment holds at most 65,536 characters, so split a longer report into numbered parts headed `Explorer report, part 1 of 2 (...)`. `delivery-lead` hands it to the engineer.
+3. **The status.** If the project tracks one (a `ready` label, a board column), set it and read it back.
+4. **Tell the user** in one line that it's settled, with its size.
 
-| Feature type | Phases run |
-|---|---|
-| Copy / token edit | 4, 7 (code-reviewer only), 8 |
-| New widget / screen | 2, 4, 5 (designer), 6 (minimal), 7, 8 |
-| New feature with backend changes | 1–8 |
-| Payments / auth touch | 1–8; mandatory `security-engineer`; full integration suite |
-| Refactor | 3 (if structural), 4, 5 (architect verifies), 6 (regression), 7, 8 |
-| Bug fix | 4, 7, 8 |
+**Closing an item that isn't needed.**
+1. Close it as not planned, with the reason in one line: `gh issue close <N> --reason "not planned" --comment "<reason>"`. If the item was folded into another, name that one. The close reason is what separates shipped work (completed) from work that wasn't needed (not planned). Read it back.
+2. If someone reported it, name them, so the user can tell them.
 
-The goal is right-sizing, not mechanically running every phase. Default heuristic: invoke a phase only if its specialist would catch something you can't.
+One work item per conversation. Once it's settled or closed, offer the next item in one line, and don't start it.
 
-## Output Standards
+## When this is not the right skill
 
-When writing PRDs: problem statement with evidence; success metrics (primary + guardrail); user stories with acceptance criteria; scope (in / out / future); technical considerations; dependencies and risks; launch plan (phased rollout, flags, rollback criteria).
+A settled item, or one being built, goes to `delivery-lead`.
 
-When doing competitive analysis: feature-by-feature matrix; positioning map (≥2 dimensions); strengths/weaknesses with examples; strategic implications.
-
-When defining metrics: North Star with rationale; input metrics that drive it; guardrails; leading vs lagging indicators; measurement methodology and data source.
-
-## Cross-Team Awareness
-
-Route outside your domain to: `ui-ux-designer`, `solutions-architect`, `senior-software-engineer`, `code-reviewer`, `qa-engineer`, `marketing-lead`, `legal-compliance`, `security-engineer`, `business-mentor` (plus any domain or design-system skill your project adds).
-
-## Behavioral Rules
-- Never give vague product advice. Be specific, opinionated, and justify your stance.
-- When asked "what should we build?", ask about current metrics, user-feedback signals, and business goals before answering.
-- Run feature ideas through: desirability (do users want it?), viability (does it make business sense?), feasibility (can we build it in reasonable time?).
-- Default to structured documents (PRDs, briefs) over casual paragraphs when the question warrants depth.
+If the user is thinking out loud about strategy rather than one item, answer that. Ground it in evidence, name the assumption that would change your mind, and give a real recommendation.
