@@ -33,7 +33,7 @@ Before designing or judging anything, write: **for [who], doing [job], at [momen
 
 ### Grouping, spacing and alignment
 - **Close means together.** The space inside a group is half the space between groups or less (8 inside, 24 between). An evenly spaced stack doesn't group.
-- **The scale.** <!-- ADAPT:design-tokens — the spacing scale, screen side padding, and card padding and corner radii. Example: "Spacing 4, 8, 16, 24, 32, 48. Screen side padding 16. Cards padded 16, radius 12; nested surfaces radius 8." If there is no design system yet, write "none yet: the first item with UI proposes these in its plan". -->
+- **The scale.** <!-- ADAPT:design-tokens — the spacing scale, screen side padding, and card padding and corner radii. Example: "Spacing 4, 8, 16, 24, 32, 48. Screen side padding 16. Cards padded 16, radius 12; nested surfaces radius 8." If there is no design system yet, write "None yet: see No tokens yet in §6." -->
 - **One left edge per screen.** Table headers sit over their columns, and compared numbers are right-aligned.
 - **Space before boxes:** add a border only when space can't group. No boxes inside boxes.
 - **Whitespace communicates certainty.** Don't compress a screen to expose secondary information.
@@ -46,7 +46,7 @@ Before designing or judging anything, write: **for [who], doing [job], at [momen
 - **Never cut meaning.** A cut-off name is fine; a cut-off explanation isn't. Numbers that change, like timers, use tabular figures.
 
 ### Colour
-- **Tokens, never raw colour values.** <!-- ADAPT:design-tokens — the colour tokens, where they live in code, and the themes. Example: "theme.colors in src/theme/colors.ts: accent, accentText, success, error, errorText, textPrimary, textSecondary, textMuted, surface, surfaceRaised, divider, scrim. Light is the default theme; dark is supported." If there is no design system yet, say so. --> Every surface works in every theme the product has.
+- **Tokens, never raw colour values.** <!-- ADAPT:design-tokens — the colour tokens, where they live in code, and the themes. Example: "theme.colors in src/theme/colors.ts: accent, accentText, success, error, errorText, textPrimary, textSecondary, textMuted, surface, surfaceRaised, divider, scrim. Light is the default theme; dark is supported." If there is no design system yet, write "None yet: see No tokens yet in §6." --> Every surface works in every theme the product has.
 - **One colour, one meaning:**
   - the accent is "do this" or "you are here", never "bad";
   - success is done or good;
@@ -170,6 +170,12 @@ Whatever the parts are, these rules hold:
 - **Every state before sign-off.** A new or reworked screen has every state and action outcome drawn: the flow, slips, menus, the end, special cards, dialogs and edges, saving and refused, reopened, and every theme. Draw them from real tokens and parts.
 - **Every card whole inside its frame.** Split edge cases across frames rather than stacking them.
 - **How they're built and rendered** is in `references/mockups.md`. Read it before any mockup work.
+
+**No tokens yet.** When this skill says the project has no design tokens, the first item with new UI sets them, and the rules in §2 still decide the values:
+- the designer proposes provisional tokens alongside the first mockups: the colours (each text colour's contrast on its surface stated), the type scale and typeface, the spacing scale, and the corner radii. They go in one file in the mockup folder, `tokens.css`, and on one extra sheet that shows them;
+- every mockup is drawn from those tokens alone;
+- the user approves the tokens together with the experience, at requirements sign-off, and the requirements carry them, every value written out;
+- the delivery's plan builds them into the code as the project's first tokens, and replaces each "None yet" line in this skill and `references/mockups.md` with the real values and where they live. From then on, mockups copy the theme like any other.
 
 The user approves the experience at requirements. The plan turns it into screens: states, primary, parts and copy for each. Departures go back to the user.
 

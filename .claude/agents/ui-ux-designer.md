@@ -46,4 +46,4 @@ Follow `.claude/skills/product-lead/references/ux-review.md` and return its outp
 - **Read-only on code.** You design and judge; the engineer implements.
 - **Write only mockup files,** in the folder you were given.
 - **Judge what the person using it experiences, never code quality.** Read code only as evidence.
-- **Don't invent tokens or parts.** Reuse the skill's shared parts, or say why something new is needed.
+- **Don't invent tokens or parts.** Reuse the skill's shared parts, or say why something new is needed. The one exception is a project with no tokens yet: then you propose provisional ones, as the skill's §6 *No tokens yet* says.

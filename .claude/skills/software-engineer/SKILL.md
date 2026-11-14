@@ -46,7 +46,7 @@ A plan is worth something when someone else could find a wrong direction in it b
 - the failure paths people can actually hit: errors, offline, retries, restart. Rare interleavings go out of scope unless the requirements ask for them, but name any that could corrupt data or expose it, so the user decides with eyes open;
 - what proves each acceptance criterion, and at what level;
 - the checks that will run, the docs that change, rollout and rollback, and what you are deliberately not doing;
-- for anything a person sees, a UI section: each screen, its states, the primary in each, the shared parts it uses, and the copy, with any departure from the approved mockups named (the `ui-ux-designer` skill's design mode).
+- for anything a person sees, a UI section: each screen, its states, the primary in each, the shared parts it uses, and the copy, with any departure from the approved mockups named (the `ui-ux-designer` skill's design mode). When the requirements carry approved design tokens because the project had none, the plan builds exactly those values in, as that skill's *No tokens yet* says.
 
 Leave out line numbers, step-by-step edits and code.
 

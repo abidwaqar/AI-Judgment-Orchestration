@@ -18,7 +18,7 @@ This is a playbook, not a compliance spec. When a work item doesn't fit it, say 
 
 - **Branches.** <!-- ADAPT:branch-model — the base branch every feature branch starts from and every pull request targets, how pull requests merge, and who merges. Example: "The base branch is main. Pull requests squash-merge into main, one commit per work item, and the lead merges once the user says it's approved." Another: "The base branch is staging, and pull requests squash-merge into it. Releases move main separately, and this skill never touches main." Then replace every <base> in these skills with the branch name. -->
   Every `<base>` below is that base branch.
-- **Requirements.** <!-- ADAPT:requirements-home — where this project keeps work items and their signed-off requirements. Default: GitHub issues in this repository, used through the gh CLI as the commands below assume. Example alternative: "one markdown file per item in docs/requirements/<slug>.md"; then rewrite the gh issue commands in steps 1, 2 and 9 to read and update those files. -->
+- **Requirements.** <!-- ADAPT:requirements-home — where this project keeps work items and their signed-off requirements. Default: GitHub issues in this repository, used through the gh CLI as the commands below assume. The alternative is file mode: one file per item in the git-ignored folder .claude/requirements/, as <slug>.md with the explorer's report beside it as <slug>.explore.md, and a Status line at the top; then rewrite the gh issue commands in steps 1, 2 and 9 to read those files and update their Status line, as adapt-to-your-project says. -->
 - **Commands.** The build, run and test commands are in the `software-engineer` skill's *Commands*.
 - **`<scratchpad>`** below is a scratch folder outside the repository: your session's scratchpad directory if the runtime gives you one, otherwise a temp folder.
 
@@ -88,7 +88,7 @@ Read the project's `CLAUDE.md` (and `AGENTS.md`, if it has one), the instruction
 
 Check the git state yourself. A subagent's account of what it touched is a summary, not evidence.
 
-- **The checkout.** Confirm the repository root, a clean tree, and no merge or rebase in progress. If the tree has uncommitted work, or a feature branch with unmerged work is checked out, this playbook doesn't describe the job: say so and get direction. Never stash, reset or discard anyone's work to make room.
+- **The checkout.** Confirm the repository root, a clean tree, and no merge or rebase in progress. The git-ignored folders under `.claude/` (delivery plans, mockups, and requirements in file mode) don't count against a clean tree. If the tree has uncommitted work, or a feature branch with unmerged work is checked out, this playbook doesn't describe the job: say so and get direction. Never stash, reset or discard anyone's work to make room.
 - **The item, before you branch.** It should have a `## Requirements (signed off <date>)` section where requirements live.
   - **With no signed-off section:** its requirements aren't settled. Tell the user. Either they settle them first with `product-lead`, and you stop here with nothing created, or they want both done here. In that case:
     1. Fetch, and bring the checkout to the current `<base>` as `product-lead`'s step 1 describes, without moving anyone's work.
@@ -101,7 +101,7 @@ Check the git state yourself. A subagent's account of what it touched is a summa
   git switch --no-track -c claude/<short-slug> origin/<base>
   ```
 
-  `--no-track` matters: a branch made from `origin/<base>` otherwise tracks it, and a bare `git push` can then land on the base branch. Always push with the branch named.
+  `--no-track` matters: a branch made from `origin/<base>` otherwise tracks it, and a bare `git push` can then land on the base branch. Always push with the fully qualified refspec in step 8.
 - **The status.** If the project tracks one (a label, a board column), mark the item in progress and read it back.
 
 ## 2. Pick up the requirements
@@ -148,6 +148,7 @@ The delivery plan is one document with four sections. The engineer appends to it
 Spawn the `software-engineer` subagent with the plan's path, the branch, and the explorer's report **word for word**, not your summary, so it doesn't redo the exploration. The requirements and the user's decisions are already in §1. The plan is **mid-level**, as the engineer's skill describes: approach, parts, data model and contracts, failure paths and test strategy, with no line-level steps. Your job is to check that it answers the requirements.
 
 - **For anything a person sees, §3 has a UI section:** each screen, its states, the primary in each, the shared parts it uses and the copy. Any departure from the approved mockups is named, and goes to the user. The mockups are in `.claude/mockups/<N>/`.
+- **If §1 carries approved design tokens** (the project had none), the UI section builds exactly those values into the code as the project's first tokens, and the change replaces each "None yet" line in the `ui-ux-designer` skill and its `references/mockups.md` with the real values and where they live. Changing a value is a departure, and goes to the user.
 - **The engineer doesn't edit §1.** When it believes a requirement is wrong, it brings that back to you. This rule has caught requirement errors that would have broken shipping features.
 - **§2 is what the user approves.** Write it for someone deciding whether to authorize the work, not as a summary of §3.
 - **Name the numbers this change moves:** the current value, the instrument that measured it, and the target. Name the ones that must not move too. Measure before building: a measured baseline once showed the obvious fix made things worse, and saved a whole delivery.
@@ -312,7 +313,13 @@ It reports in two packets. The **evidence** goes to the reviewer: its summary, e
 4. Confirm the plan is still untracked.
 5. Write a message that says what changed and why.
 
-Never push work that is still uncommitted. Push with the branch named (`git push -u origin claude/<short-slug>`), and afterwards check that the branch on GitHub points at the commit you tested (`git ls-remote origin claude/<short-slug>`).
+**How to push, every time.** Never push work that is still uncommitted. Name the ref fully on both sides of the refspec, so no push configuration (`remote.origin.push`, `push.default`) can send it anywhere else:
+
+```bash
+git push -u origin refs/heads/claude/<short-slug>:refs/heads/claude/<short-slug>
+```
+
+Afterwards, check that exact remote ref: `git ls-remote origin refs/heads/claude/<short-slug>` must print the commit you tested.
 
 Start once the last implementation review leaves nothing blocking, or once the user has the verbatim block.
 
@@ -323,7 +330,7 @@ Start once the last implementation review leaves nothing blocking, or once the u
    - Have the engineer fix every failure, commit, and rerun until it's clean.
    - If a failure also happens on `<base>` without this change, tell the user instead of quietly widening the work.
    - Note the SHA of the commit that passed, and keep the run's output.
-4. **Push the branch.**
+4. **Push the branch,** as *How to push* says, and check the remote ref.
 5. **Open the pull request** with `gh pr create --base <base>`. Reference the item as `Closes #N` when `<base>` is the repository's default branch. Otherwise write `Work item: #N`: closing keywords act only on pull requests into the default branch, so you close the item yourself after the merge.
 6. **Send the user the link.**
 
@@ -343,7 +350,7 @@ The description is the handoff report, plain language first:
 **When the user says comments are up:**
 1. Read all of them: the discussion and reviews with `gh pr view <N> --comments`, and the line comments, which that command doesn't show, with `gh api --paginate repos/{owner}/{repo}/pulls/<N>/comments`.
 2. Have the engineer fix them, and decide whether the fix needs another implementation review.
-3. Commit, as above, and push.
+3. Commit and push, both as above.
 4. If the fixes changed what the description says, update it with `gh pr edit <N> --body-file <file>`. Do the same after the final suite run, so the description always describes the head that will be merged.
 5. Reply to each comment with what changed. Replies post from the user's account, so start each one with "Claude:".
 
@@ -353,7 +360,7 @@ The user tells you here that it's approved. (On a solo project, GitHub won't let
 
 1. **Bring in the latest base.** Fetch. If `origin/<base>` has moved, bring it in exactly as in step 8, with the engineer.
    - A conflict resolution that needed judgement goes back to the user before you merge, because it changes what they approved.
-2. **The whole suite must have passed on the exact commit you merge.** If anything changed since the last full run, such as comment fixes or a merge from the base, commit it, run the suite, fix, and push. Note the tested SHA.
+2. **The whole suite must have passed on the exact commit you merge.** If anything changed since the last full run, such as comment fixes or a merge from the base, commit it, run the suite, fix, and push as step 8 says. Note the tested SHA.
    - The one exception: if `git diff --name-only <last full-run commit> <commit you merge>` lists nothing the tests read (only docs, skills or other files outside the code), the last full run still stands for the new commit, and the new commit is the tested SHA.
 3. **Check right before merging.**
    - Fetch again, and confirm the tested commit still contains `origin/<base>` with `git merge-base --is-ancestor origin/<base> <tested sha>`. If the base moved, go back to step 1.

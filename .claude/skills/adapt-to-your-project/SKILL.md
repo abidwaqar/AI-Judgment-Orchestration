@@ -48,9 +48,9 @@ A few questions at a time, two or three per message. For each, say what you infe
    - or none, for a backend, where the engineer checks the running service through its API and logs instead.
 
    If the tool they pick isn't installed, say which one and how to add it.
-3. **The design tokens and voice:** where they live, or "none yet". With none yet, the rules stay, and the first item with UI proposes tokens in its plan.
+3. **The design tokens and voice:** where they live, or "none yet". With none yet, the rules stay, and the `ui-ux-designer` skill's §6 *No tokens yet* applies: the designer proposes provisional tokens alongside the first item's mockups, the user approves them with that item's experience, the requirements carry them, and that item's delivery builds them into the code.
 4. **Codex,** if the check in step 1 failed: will they install it (`npm install -g @openai/codex`, then `codex login`) for independent reviews? If not, say plainly what that means: every review then runs on the `delivery-reviewer` agent (and every UX review on the `ui-ux-designer` agent), Claude reviewing Claude's work, and every verdict is recorded as NOT INDEPENDENT. It's their choice; record it in step 5.
-5. **Where requirements live:** GitHub issues (the default), or a markdown file per item, and where.
+5. **Where requirements live:** GitHub issues (the default), or file mode: one markdown file per item in `.claude/requirements/`, git-ignored, so the product lead can write it without touching tracked files.
 6. **The build, run and test commands** you couldn't confirm: above all the full suite, how to run one file's tests, and whether the full suite's output shows per-file counts.
 7. **The branch model:** the base branch feature work starts from, the pull-request target, the merge style (squash by default), and who merges.
 8. **A domain expert,** optional: a skill they have, or want, for the product's domain, and when to load it.
@@ -63,18 +63,26 @@ For each slot found in step 1:
 - **Replace every `<base>`** in `.claude/skills/` with the base branch's name, once the branch model is settled.
 - **The `ui-ux-designer` agent's tools:** append the see-the-app tools to its `tools:` line, then delete its `# ADAPT:` comment.
 - **The GPT model:** tell the user which model and effort `.claude/skills/product-lead/scripts/gpt-model.sh` names, and that they should set them to the strongest their Codex plan offers.
+- **No design tokens yet:** fill each `design-tokens` slot with "None yet: see No tokens yet in §6." (in `references/mockups.md`, "in the skill's §6"), and keep both *No tokens yet* rules. Don't make up values here: the tokens are a design decision, made with the first item's mockups.
 
 Remove what doesn't apply, a whole sentence, bullet or section at a time, so nothing reads half-cut:
 - **A website:** no emulator, simulator or mobile MCP steps; the browser tool and the local URL stand in their place.
 - **A backend with no UI:** remove the app-checking steps that need a screen (screenshots, the UX review sections in both leads, the mockup steps); the engineer checks the running service through its API and logs. Ask before deleting the `ui-ux-designer` skill and agent and `references/ux-review.md` outright. If the user agrees, delete them and remove every reference to them.
-- **Requirements in markdown files:** rewrite the `gh issue` commands in both leads to read and write those files, including closing an item and keeping the explorer's report.
+- **Requirements in files (file mode):** each item is `.claude/requirements/<slug>.md`, with the explorer's report beside it as `<slug>.explore.md`. In both leads, rewrite the `gh issue` commands to use those files, and the slug wherever they say `<N>`:
+  - reading an item is reading its file; a new item is a new file named by the user's slug;
+  - the file's first line is its status: `Status: open`, `Status: settled`, `Status: in progress`, `Status: closed (not planned): <reason>` or `Status: done (<pull request link>)`. Each lead updates it wherever its steps set a status or close the issue;
+  - settling writes the `## Requirements (signed off <date>)` section into the file, and copies the approved mockup PNGs to `.claude/requirements/<slug>/`, referenced from there, because the delivery deletes `.claude/mockups/<slug>/` after the merge;
+  - the history search (`git log --grep`) and the pull request's `Closes #N` line name the slug instead.
+
+  The product lead's read-only rule already allows writing inside `.claude/requirements/`, and the delivery lead's clean-tree check ignores the folder because git does. A team that wants requirements shared can commit the folder instead: leave it out of `.gitignore`. Each settled file is then an uncommitted change, so the user commits it to the base branch before its delivery starts, because the delivery lead stops on uncommitted work.
 - **No domain expert:** delete the domain-expert lines.
 - **No Codex:** keep the Codex sections, since the user may install it later, and record the choice in step 5.
 
-Add the delivery's scratch folders to the project's `.gitignore`, if they aren't there:
+Add the delivery's scratch folders to the project's `.gitignore`, if they aren't there, and in file mode the requirements folder too, unless the team commits it:
 
     .claude/delivery-plans/
     .claude/mockups/
+    .claude/requirements/
 
 Then check:
 - `grep -rn "ADAPT:" .claude CLAUDE.md --exclude-dir=adapt-to-your-project` finds nothing;
@@ -98,10 +106,12 @@ Three decisions stay with a person: the requirements, the plan, and the result.
 - **Settle an item:** `/product-lead <item>` explores the code, asks what's ours to decide, and writes signed-off requirements to [where requirements live].
 - **Build it:** `/delivery-lead <item>`. A `software-engineer` subagent writes a mid-level plan, an independent reviewer checks its direction, we approve it, the engineer builds, tests and checks the running app, the reviews run again, and a pull request into [the base branch] comes to us before the merge.
 - **Reviews** run on [Codex: a GPT model from another AI family, so they are independent | the `delivery-reviewer` agent, because this project has no Codex CLI, so every verdict is NOT INDEPENDENT].
-- **Standards:** `software-engineer` for code, `ui-ux-designer` for anything people see or read, `solutions-architect` for structural decisions.
+- **Standards:** `software-engineer` for code, [`ui-ux-designer` for anything people see or read, if it was kept,] `solutions-architect` for structural decisions.
 ```
 
-`delivery-lead` reads the reviews line at the start of every delivery, so keep its wording.
+`delivery-lead` reads the reviews line at the start of every delivery, so keep its wording. Name only the skills and agents still in `.claude/`: if the user agreed to delete the `ui-ux-designer` skill and agent, leave it out of the Standards line, and out of the reviews line's mention of UX reviews.
+
+Then run step 3's reference check again, now over `CLAUDE.md` (or `AGENTS.md`) as well as `.claude/`: every skill or agent the new section names must exist.
 
 ## 6. Report back
 

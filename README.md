@@ -1,4 +1,3 @@
-<!-- Adapted from the orchestration behind Gryter (gryter.com), an AI fitness coach built by one engineer. -->
 # AI Judgment Orchestration
 
 A starter of the orchestration one engineer uses to ship like a team of 50 with AI, built from thirteen mistakes.

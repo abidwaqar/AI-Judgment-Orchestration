@@ -7,7 +7,7 @@ A project that copies `.claude/` gets its own `CLAUDE.md` section ("How we work"
 
 When you change the starter:
 - **Keep every `ADAPT:` slot** (`<!-- ADAPT:<slot-name> — what goes here, and an example -->`, or a `# ADAPT:` comment inside agent frontmatter). The setup skill finds them by that marker.
-- **Keep every attribution line** exactly as it is: right after the frontmatter, the first line of a markdown file without frontmatter, or line 2 of `gpt-model.sh`.
+- **Keep every attribution line** exactly as it is: right after the frontmatter, the first line of a markdown file without frontmatter, or line 2 of `gpt-model.sh`. `README.md` is the one exception: it carries the sentence once, as visible text in its credit section, because that's the copy GitHub shows.
 - **Keep the frontmatter first** in every `SKILL.md` and agent file, valid YAML with `name` and `description`, or the skill or agent won't load.
 - **Name only skills and agents that exist** under `.claude/` (Claude Code's built-in `Explore` agent aside).
 - **Keep the files free of any one project's specifics:** its product, stack, people, numbers and paths belong in slots, filled in the project that uses the starter.
