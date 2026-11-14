@@ -25,7 +25,7 @@ It's a set of [Claude Code](https://claude.com/claude-code) skills and agents yo
 | Agent | `software-engineer` | The engineer the delivery lead spawns and keeps warm for the whole item, from plan to last repair. |
 | Agent | `delivery-reviewer` | A Claude fallback reviewer, used only when you choose it. Every verdict it gives is marked NOT INDEPENDENT. |
 | Agent | `ui-ux-designer` | Draws mockups, reviews screens and screenshots, and stands in as the UX reviewer when you choose it. |
-| Agent | `web-researcher` | Researches outside the repository, with no access to it, so its findings aren't anchored to how you do things now. |
+| Agent | `web-researcher` | Researches outside the repository, with no access to it and without your project notes, so its findings are far less anchored to how you do things now. |
 
 The reviewers' rulebooks, with their output contracts and severity scales, are in `.claude/skills/product-lead/references/` (`review.md` and `ux-review.md`). The GPT model and effort every Codex run uses are in one file, `.claude/skills/product-lead/scripts/gpt-model.sh`.
 
