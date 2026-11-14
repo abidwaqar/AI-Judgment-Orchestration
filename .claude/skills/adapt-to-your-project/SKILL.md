@@ -50,7 +50,7 @@ A few questions at a time, two or three per message. For each, say what you infe
    If the tool they pick isn't installed, say which one and how to add it.
 3. **The design tokens and voice:** where they live, or "none yet". With none yet, the rules stay, and the `ui-ux-designer` skill's §6 *No tokens yet* applies: the designer proposes provisional tokens alongside the first item's mockups, the user approves them with that item's experience, the requirements carry them, and that item's delivery builds them into the code.
 4. **Codex,** if the check in step 1 failed: will they install it (`npm install -g @openai/codex`, then `codex login`) for independent reviews? If not, say plainly what that means: every review then runs on the `delivery-reviewer` agent (and every UX review on the `ui-ux-designer` agent), Claude reviewing Claude's work, and every verdict is recorded as NOT INDEPENDENT. It's their choice; record it in step 5.
-5. **Where requirements live:** GitHub issues (the default), or file mode: one markdown file per item in `.claude/requirements/`, git-ignored, so the product lead can write it without touching tracked files.
+5. **Where requirements live:** GitHub issues (the default), or file mode: one markdown file per item in `.claude/requirements/`, git-ignored, so the product lead can write it without touching tracked files. File mode keeps requirements on this machine only; a team that needs them shared uses GitHub issues.
 6. **The build, run and test commands** you couldn't confirm: above all the full suite, how to run one file's tests, and whether the full suite's output shows per-file counts.
 7. **The branch model:** the base branch feature work starts from, the pull-request target, the merge style (squash by default), and who merges.
 8. **A domain expert,** optional: a skill they have, or want, for the product's domain, and when to load it.
@@ -74,11 +74,11 @@ Remove what doesn't apply, a whole sentence, bullet or section at a time, so not
   - settling writes the `## Requirements (signed off <date>)` section into the file, and copies the approved mockup PNGs to `.claude/requirements/<slug>/`, referenced from there, because the delivery deletes `.claude/mockups/<slug>/` after the merge;
   - the history search (`git log --grep`) and the pull request's `Closes #N` line name the slug instead.
 
-  The product lead's read-only rule already allows writing inside `.claude/requirements/`, and the delivery lead's clean-tree check ignores the folder because git does. A team that wants requirements shared can commit the folder instead: leave it out of `.gitignore`. Each settled file is then an uncommitted change, so the user commits it to the base branch before its delivery starts, because the delivery lead stops on uncommitted work.
+  The product lead's read-only rule already allows writing inside `.claude/requirements/`, and the delivery lead's clean-tree check ignores the folder because git does. Never commit the folder: the leads update each file's status as they go, and a tracked copy would leave uncommitted changes that stop the next delivery. A team that needs shared requirements uses GitHub issues instead.
 - **No domain expert:** delete the domain-expert lines.
 - **No Codex:** keep the Codex sections, since the user may install it later, and record the choice in step 5.
 
-Add the delivery's scratch folders to the project's `.gitignore`, if they aren't there, and in file mode the requirements folder too, unless the team commits it:
+Add the delivery's scratch folders to the project's `.gitignore`, if they aren't there, and in file mode the requirements folder too:
 
     .claude/delivery-plans/
     .claude/mockups/
